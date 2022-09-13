@@ -212,9 +212,9 @@ jobs:
           command: |
             # Your code here
 
-            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/roles/configure-server.yml
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure      
-
+      - destroy-environment
 #   run-migrations:
 #     docker:
 #       # Docker image here that supports NodeJS
