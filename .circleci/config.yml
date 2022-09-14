@@ -192,7 +192,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: docker.io/ppodgorsek/ansible-awx-ee:latest
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - checkout
