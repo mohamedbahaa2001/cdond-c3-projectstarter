@@ -263,12 +263,15 @@ jobs:
      # Here's where you will add some code to rollback on failure      
       - destroy-environment
   deploy-frontend:
+    executor: aws-cli/default
     docker:
       # Docker image here that supports AWS CLI
-      - image: sleavely/node-awscli:14.x
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - attach_workspace:
           at: ~/
       - run:
