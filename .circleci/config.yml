@@ -243,8 +243,7 @@ jobs:
             # Your code here
             cd backend
             npm install
-            rm -rf node_modules && rm ./package-lock.json && npm install
-            npm start
+            npm audit fix -f
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
