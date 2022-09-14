@@ -282,7 +282,7 @@ jobs:
             apk add --upgrade bash
             apk add --update ansible
             apk add openssh-client
-            apk add n--update nodejs
+            apk add --update nodejs
 
             pip3 install awscli
       - run:
