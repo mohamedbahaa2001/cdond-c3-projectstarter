@@ -203,7 +203,8 @@ jobs:
       - run:
           name: install tar
           command: |
-            yum install -y tar gzip
+            apk add tar gzip
+            # yum install -y tar gzip
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["5d:0e:3d:cd:0e:c8:09:9f:ce:3e:c6:18:2f:ce:37:e8"]
