@@ -316,7 +316,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: sleavely/node-awscli:14.x #python:3.7-alpine3.11
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
