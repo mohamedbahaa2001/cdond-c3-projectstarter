@@ -245,6 +245,7 @@ jobs:
             npm install
             npm audit fix -f
             npm run build
+            npm fund
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
