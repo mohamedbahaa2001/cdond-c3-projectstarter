@@ -33,9 +33,10 @@ commands:
 #             #  Add revert code here. You can find this in the Getting Started section.
             #   exit 1
             # fi
+# orbs:
+#   slack: circleci/slack@4.10.1
 orbs:
-  slack: circleci/slack@4.10.1
-
+  aws-cli: circleci/aws-cli@3.1
 jobs:
   build-frontend:
     docker:
@@ -190,12 +191,15 @@ jobs:
       # Here's where you will add some code to rollback on failure      
       - destroy-environment
   configure-infrastructure:
+    executor: aws-cli/default
     docker:
       # Docker image here that supports Ansible
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: install tar
           command: |
