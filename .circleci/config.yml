@@ -332,6 +332,9 @@ jobs:
             # your code here
             apk add --update ansible rsync
             apk add curl
+            apk add --update nodejs
+            apk add npm
+            apk add --update npm
             pip3 install awscli
       - run:
           name: backend build
