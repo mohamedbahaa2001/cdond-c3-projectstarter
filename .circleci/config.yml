@@ -215,26 +215,31 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
+            apk add curl
+            apk add --upgrade bash
             apk add --update ansible
+            apk add openssh-client
+            pip3 install awscli
       - run:
           name: Configure server
           command: |
             # Your code here
             cd .circleci/ansible
+            export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure      
       - destroy-environment
 
   run-migrations:
-    executor: aws-cli/default
+    # executor: aws-cli/default
     docker:
-      - image: circleci/node:13.8.0
+      - image: sleavely/node-awscli:14.x #circleci/node:13.8.0
       # Docker image here that supports NodeJS
     steps:
       # Checkout code from git
       - checkout
-      - aws-cli/setup:
-          profile-name: default
+      # - aws-cli/setup:
+      #     profile-name: default
       - restore_cache:
           key: backend-build
       - run:
@@ -243,7 +248,7 @@ jobs:
             # Your code here
             cd backend
             # npm install
-            cat .env
+            # cat .env
             npm i
             npm run build
             npm run migrations > migrations_dump.txt
