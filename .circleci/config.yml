@@ -283,7 +283,8 @@ jobs:
             apk add --update ansible
             apk add openssh-client
             apk add --update nodejs
-
+            apt-get install npm
+            apk add npm
             pip3 install awscli
       - run:
           name: Get backend url
