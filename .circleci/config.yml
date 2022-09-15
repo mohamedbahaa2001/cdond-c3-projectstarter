@@ -395,7 +395,7 @@ jobs:
       - run:
           name: try to see ec2 in inventory
           command: |
-            cd ~/project/.circleci/ansible/
+            cd .circleci/ansible/
             cat inventory.txt      
       - run:
           name: Backend smoke test.
