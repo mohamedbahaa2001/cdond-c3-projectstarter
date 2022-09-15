@@ -201,7 +201,7 @@ jobs:
       # Here's where you will add some code to rollback on failure      
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-          
+
   configure-infrastructure:
     executor: aws-cli/default
     docker:
@@ -419,10 +419,10 @@ jobs:
             fi
       
       # Here's where you will add some code to rollback on failure  
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # - revert-migrations:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 #   cloudfront-update:
 #     docker:
 #       # Docker image here that supports AWS CLI
@@ -483,7 +483,7 @@ workflows:
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:
-          requires: [run-migrations]
+          requires: [run-migrations,deploy-frontend]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
