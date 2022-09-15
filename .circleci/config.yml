@@ -386,12 +386,12 @@ jobs:
       #       # your code here
             
       - attach_workspace:
-          at: ~/
-      - run:
-          name: see all ec2
-          command: |
-            cat project/.circleci/ansible/inventory.txt
-            cat ~/project/.circleci/ansible/inventory.txt
+          at: ~/root
+      # - run:
+      #     name: see all ec2
+      #     command: |
+      #       cat project/.circleci/ansible/inventory.txt
+      #       cat ~/project/.circleci/ansible/inventory.txt
       - run:
           name: try to see ec2 in inventory
           command: |
