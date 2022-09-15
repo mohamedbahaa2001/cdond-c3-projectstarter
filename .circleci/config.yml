@@ -32,12 +32,12 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( "$SUCCESS"==1 )); 
+            SUCCESS=$(curl --insecure https://kvdb.io/GVqhKcnDzoJYiCWEn1P1dD/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo $SUCCESS
+            if [[ "$SUCCESS" == "success" ]]
             then
-              cd ~/project/backend
-              npm install
-              #  Add revert code here. You can find this in the Getting Started section.
+              pwd
+              ls -la
               npm run migrations:revert
             fi
 # orbs:
@@ -271,7 +271,7 @@ jobs:
             # Your code here
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl https://kvdb.io/QqvgDe4iUZCttXafBHSTQn/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl https://kvdb.io/GVqhKcnDzoJYiCWEn1P1dD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
      # Here's where you will add some code to rollback on failure      
       - destroy-environment:
@@ -370,59 +370,44 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   smoke-test:
-    docker:
-      # Lightweight Docker image 
+    docker: 
       - image: python:3.7-alpine3.11
-    steps:
-      # Checkout code from git
-      - run:
+    steps:  
+      - checkout
+      - run: 
           name: Install dependencies
           command: |
-            # your code here
-            apk add --update ansible rsync
-            apk add curl
-            apk add --update nodejs
-            apk add npm
-            apk add --update npm
-            pip3 install awscli
-      # - run:
-      #     name: Get backend url
-      #     command: |
-      #       # your code here     
-      - run:
-          name: Backend smoke test.
+            apk add --update curl
+            pip install awscli
+            pip install nodejs
+            pip install npm
+      - run: 
+          name: Backend smoke test
           command: |
-            # your code here
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+            export BACKEND_IP=$( aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             echo "$BACKEND_IP"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
+            if curl "${API_URL}/api/status" | grep "ok" 
             then
               return 0
             else
               return 1
             fi
-      - run:
-          name: Frontend smoke test.
+      
+      - run: 
+          name: Frontend smoke test
           command: |
-            # your code here
-
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
-            echo ${URL} 
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
+            echo ${URL}
             if curl -s ${URL} | grep "Welcome"
             then
-                # Change this to 0 after the job fails
-              return 1
+              return 0
             else
               return 1
             fi
-      
-      # Here's where you will add some code to rollback on failure  
-      - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment  
+      - revert-migrations
 #   cloudfront-update:
 #     docker:
 #       # Docker image here that supports AWS CLI
