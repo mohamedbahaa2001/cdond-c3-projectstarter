@@ -32,7 +32,7 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = 1
-            if(( $SUCCESS==1 )); 
+            if(( ${SUCCESS}==1 )); 
             then
             cd ~/project/backend
             npm install
@@ -385,7 +385,18 @@ jobs:
       #     command: |
       #       # your code here
             
-            
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: see all ec2
+          command: |
+            cat project/.circleci/ansible/inventory.txt
+            cat ~/project/.circleci/ansible/inventory.txt
+      - run:
+          name: try to see ec2 in inventory
+          command: |
+            cd ~/project/.circleci/ansible/
+            cat inventory.txt      
       - run:
           name: Backend smoke test.
           command: |
@@ -415,6 +426,7 @@ jobs:
             else
               return 1
             fi
+      
       # Here's where you will add some code to rollback on failure  
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
